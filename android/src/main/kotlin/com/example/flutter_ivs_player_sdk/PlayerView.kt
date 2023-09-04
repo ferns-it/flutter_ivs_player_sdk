@@ -108,6 +108,17 @@ internal class PlayerView(
 
     override fun dispose() {
         binding!!.playerView.removeAllViews();
+        playerRelease();
     }
 
+
+    /**
+     *  Release Player instance
+     */
+    private fun playerRelease() {
+        Log.d(TAG, "Releasing player")
+        // Removes a playback state listener
+        playerView.player.removeListener(playerListener);
+        playerView.player.release()
+    }
 }
