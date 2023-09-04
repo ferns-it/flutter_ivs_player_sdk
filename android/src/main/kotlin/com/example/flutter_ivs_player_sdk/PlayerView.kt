@@ -97,7 +97,7 @@ internal class PlayerView(
             // Load Uri to play
             playerView.resizeMode = ResizeMode.FILL;
             playerView.controlsEnabled = true;
-            
+
             playerView.player.apply {
                 load(Uri.parse(playbackUrl))
                 addListener(playerListener);
