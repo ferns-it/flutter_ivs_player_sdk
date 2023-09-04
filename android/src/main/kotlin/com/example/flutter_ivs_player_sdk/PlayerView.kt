@@ -13,6 +13,7 @@ import com.amazonaws.ivs.player.Player
 import com.amazonaws.ivs.player.PlayerException
 import com.amazonaws.ivs.player.PlayerView
 import com.amazonaws.ivs.player.Quality
+import com.amazonaws.ivs.player.ResizeMode
 import com.amazonaws.ivs.player.TextMetadataCue
 import com.example.flutter_ivs_player_plugin.databinding.IvsPlayerViewActivityBinding
 import io.flutter.plugin.platform.PlatformView
@@ -94,6 +95,9 @@ internal class PlayerView(
         val playbackUrl = creationParams?.get("playbackUrl") as? String
         if (playbackUrl != null) {
             // Load Uri to play
+            playerView.resizeMode = ResizeMode.FILL;
+            playerView.controlsEnabled = true;
+            
             playerView.player.apply {
                 load(Uri.parse(playbackUrl))
                 addListener(playerListener);
