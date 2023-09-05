@@ -95,9 +95,6 @@ internal class PlayerView(
         val playbackUrl = creationParams?.get("playbackUrl") as? String
         if (playbackUrl != null) {
             // Load Uri to play
-            playerView.resizeMode = ResizeMode.FILL;
-            playerView.controlsEnabled = true;
-
             playerView.player.apply {
                 load(Uri.parse(playbackUrl))
                 addListener(playerListener);

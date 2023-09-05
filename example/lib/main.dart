@@ -18,7 +18,8 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   final _flutterIVSPlayerSdk = FlutterIVSPlayerSdk();
 
-  static const testPlaybackUrl = "https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8";
+  static const testPlaybackUrl =
+      "https://fcc3ddae59ed.us-west-2.playback.live-video.net/api/video/v1/us-west-2.893648527354.channel.DmumNckWFTqz.m3u8";
 
   @override
   Widget build(BuildContext context) {
