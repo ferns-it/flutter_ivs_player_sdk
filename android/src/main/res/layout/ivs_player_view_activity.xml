@@ -5,12 +5,44 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.amazonaws.ivs.player.PlayerView
-        android:id="@+id/playerView"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="-81dp" />
+        android:keepScreenOn="true"
+        tools:context=".activities.MainActivity">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:animateLayoutChanges="true"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <FrameLayout
+                android:id="@+id/player_root"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/colorBackground">
+
+                <SurfaceView
+                    android:id="@+id/surface_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center" />
+
+<!--                <ProgressBar-->
+<!--                    android:id="@+id/pb_buffering"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_gravity="center"-->
+<!--                    android:indeterminate="true"-->
+<!--                    android:scaleType="center"-->
+<!--                    tools:visibility="visible" />-->
+            </FrameLayout>
+
+            <include layout="@layout/view_player_controls" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

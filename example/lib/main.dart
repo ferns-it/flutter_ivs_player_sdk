@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_ivs_player_plugin/flutter_ivs_player_sdk.dart';
 import 'package:flutter_ivs_player_plugin/flutter_ivs_player_view.dart';
 import 'package:flutter_ivs_player_plugin/model/player_data.dart';
-import 'package:flutter_ivs_player_plugin/model/player_state.dart';
 
 void main() {
   runApp(const MyApp());
@@ -34,16 +33,16 @@ class _MyAppState extends State<MyApp> {
                   data: PlayerData(playbackUrl: testPlaybackUrl),
                 ),
               ),
-              StreamBuilder<PlayerState>(
-                  stream: _flutterIVSPlayerSdk.playerListener,
-                  builder: (context, snapshot) {
-                    return SizedBox(
-                      height: 50,
-                      child: Center(
-                        child: Text("${snapshot.data}"),
-                      ),
-                    );
-                  })
+              // StreamBuilder<PlayerState>(
+              //     stream: _flutterIVSPlayerSdk.playerListener,
+              //     builder: (context, snapshot) {
+              //       return SizedBox(
+              //         height: 50,
+              //         child: Center(
+              //           child: Text("${snapshot.data}"),
+              //         ),
+              //       );
+              //     })
             ],
           ),
         ),
