@@ -11,23 +11,19 @@ import android.view.LayoutInflater
 import android.view.Surface
 import android.view.View
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.amazonaws.ivs.player.Cue
 import com.amazonaws.ivs.player.MediaPlayer
-import com.amazonaws.ivs.player.MediaType
 import com.amazonaws.ivs.player.Player
 import com.amazonaws.ivs.player.PlayerException
 import com.amazonaws.ivs.player.PlayerView
 import com.amazonaws.ivs.player.Quality
-import com.amazonaws.ivs.player.ResizeMode
 import com.amazonaws.ivs.player.TextMetadataCue
 import com.example.flutter_ivs_player_plugin.R
 import com.example.flutter_ivs_player_plugin.databinding.IvsPlayerViewActivityBinding
 import com.example.flutter_ivs_player_plugin.databinding.ViewPlayerControlsBinding
 import io.flutter.plugin.platform.PlatformView
-import java.nio.charset.StandardCharsets
 
 
 private const val TAG = "Flutter_IVS_Plugin"
@@ -58,9 +54,13 @@ internal class PlayerView(
     init {
         val inflater = LayoutInflater.from(context)
         binding = IvsPlayerViewActivityBinding.inflate(inflater)
-        playerControlBinding = ViewPlayerControlsBinding.inflate(inflater)
+        playerControlBinding = binding!!.playerControls;
         val surfaceView = binding!!.surfaceView
         playerStart(surfaceView.holder.surface)
+        playerControlBinding!!.fullScreenButton.setOnClickListener() {
+            toggleFullScreen()
+        }
+
         constrainedLayout = binding!!.root;
     }
 
@@ -71,22 +71,20 @@ internal class PlayerView(
 
     }
 
-    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+
     @SuppressLint("SourceLockedOrientationActivity")
     private fun toggleFullScreen() {
         if (activity.requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
-
             val drawable = ContextCompat.getDrawable(
                 context,
                 R.drawable.ic_exit_fullscreen
             )
-
-            val fullScreenButton = playerControlBinding!!.fullScreenButton;
+            val fullScreenButton = playerControlBinding!!.fullScreenButtonView;
             fullScreenButton.post {
-                fullScreenButton.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                    drawable, null, null, null
-                )
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    fullScreenButton.background = drawable
+                }
             }
 
         } else {
@@ -95,11 +93,11 @@ internal class PlayerView(
                 context,
                 R.drawable.ic_fullscreen
             )
-            val fullScreenButton = playerControlBinding!!.fullScreenButton;
+            val fullScreenButton = playerControlBinding!!.fullScreenButtonView;
             fullScreenButton.post {
-                fullScreenButton.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                    drawable, null, null, null
-                )
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    fullScreenButton.background = drawable
+                }
             }
         }
     }
