@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.pm.ActivityInfo
+import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.util.Log
@@ -15,6 +16,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.amazonaws.ivs.player.Cue
 import com.amazonaws.ivs.player.MediaPlayer
+import com.amazonaws.ivs.player.MediaType
 import com.amazonaws.ivs.player.Player
 import com.amazonaws.ivs.player.PlayerException
 import com.amazonaws.ivs.player.PlayerView
@@ -24,6 +26,7 @@ import com.example.flutter_ivs_player_plugin.R
 import com.example.flutter_ivs_player_plugin.databinding.IvsPlayerViewActivityBinding
 import com.example.flutter_ivs_player_plugin.databinding.ViewPlayerControlsBinding
 import io.flutter.plugin.platform.PlatformView
+import java.nio.charset.StandardCharsets
 
 
 private const val TAG = "Flutter_IVS_Plugin"
@@ -39,7 +42,6 @@ internal class PlayerView(
     private var constrainedLayout: ConstraintLayout
     private var binding: IvsPlayerViewActivityBinding? = null
     private var playerControlBinding: ViewPlayerControlsBinding? = null
-    private lateinit var playerView: PlayerView
     private var playerListener: Player.Listener? = null
 
 
@@ -68,7 +70,6 @@ internal class PlayerView(
     private fun initPlayer() {
         // Media player initialization
         player = MediaPlayer(context)
-
     }
 
 
@@ -130,42 +131,83 @@ internal class PlayerView(
 
 
     private fun setPlayerListener() {
+
+
         // Media player listener creation and initialization
         playerListener = object : Player.Listener() {
             override fun onAnalyticsEvent(p0: String, p1: String) {}
-            override fun onCue(cue: Cue) {
-                when (cue) {
-                    is TextMetadataCue -> Log.i(
-                        TAG,
-                        "Received Text Metadata: ${cue.text}"
-                    )
-                }
-            }
-
+            override fun onCue(cue: Cue) {}
             override fun onDurationChanged(duration: Long) {
                 Log.i(TAG, "New duration: $duration")
-                playerView.player.seekTo(duration)
+                player?.seekTo(duration)
             }
 
             override fun onStateChanged(state: Player.State) {
                 activity.runOnUiThread {
-                    Player.State.READY
+                    listenToPlayerEvents(state);
                     FlutterIvsPlayerSdk.eventSink?.success(state.name)
                 }
             }
 
             override fun onError(error: PlayerException) {
                 Log.d(TAG, "Exception: ${error.errorMessage}")
+                updatePlayButton(false)
             }
 
             override fun onRebuffering() {}
-
             override fun onSeekCompleted(duration: Long) {}
-
             override fun onVideoSizeChanged(p0: Int, p1: Int) {}
-
             override fun onQualityChanged(quality: Quality) {}
 
+        }
+
+        if (player == null) return;
+        player!!.addListener(playerListener!!);
+    }
+
+
+    private fun listenToPlayerEvents(state: Player.State) {
+        when (state) {
+            Player.State.BUFFERING -> {
+                // Indicates that the Player is buffering content
+            }
+
+            Player.State.IDLE -> {
+                // Indicates that the Player is idle
+            }
+
+            Player.State.READY -> {
+                // Indicates that the Player is ready to play the loaded source
+            }
+
+            Player.State.ENDED -> {
+                // Indicates that the Player reached the end of the stream
+            }
+
+            Player.State.PLAYING -> {
+                // Indicates that the Player is playing
+                updatePlayButton(true)
+            }
+
+            else -> { /* Ignored */
+            }
+        }
+    }
+
+
+    private fun updatePlayButton(isPlaying: Boolean) {
+        if (isPlaying) {
+            val drawable = ContextCompat.getDrawable(
+                context,
+                R.drawable.ic_pause_button
+            )
+            binding!!.playerControls.playButtonView.setImageDrawable(drawable)
+        } else {
+            val drawable = ContextCompat.getDrawable(
+                context,
+                R.drawable.ic_play_button
+            )
+            binding!!.playerControls.playButtonView.setImageDrawable(drawable)
         }
     }
 
