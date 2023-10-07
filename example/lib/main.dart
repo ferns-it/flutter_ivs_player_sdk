@@ -25,26 +25,8 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        body: Center(
-          child: Column(
-            children: <Widget>[
-              Expanded(
-                child: FlutterIVSPlayerView(
-                  data: PlayerData(playbackUrl: testPlaybackUrl),
-                ),
-              ),
-              // StreamBuilder<PlayerState>(
-              //     stream: _flutterIVSPlayerSdk.playerListener,
-              //     builder: (context, snapshot) {
-              //       return SizedBox(
-              //         height: 50,
-              //         child: Center(
-              //           child: Text("${snapshot.data}"),
-              //         ),
-              //       );
-              //     })
-            ],
-          ),
+        body: FlutterIVSPlayerView(
+          data: PlayerData(playbackUrl: testPlaybackUrl),
         ),
       ),
     );

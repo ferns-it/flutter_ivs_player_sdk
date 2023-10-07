@@ -5,7 +5,7 @@
     <dimen name="option_button_size">38dp</dimen>
     <dimen name="url_selection_button_size">48dp</dimen>
     <dimen name="url_selection_button_padding">12dp</dimen>
-    <dimen name="player_control_height">100dp</dimen>
+    <dimen name="player_control_height">60dp</dimen>
     <dimen name="player_control_landscape_width">600dp</dimen>
 
     <dimen name="dimen_small">8dp</dimen>

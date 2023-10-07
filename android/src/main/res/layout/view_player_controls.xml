@@ -27,22 +27,10 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent">
 
-            <TextView
-                android:id="@+id/tv_progress_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dimen_small"
-                android:gravity="start"
-                android:textColor="@color/colorWhite"
-                android:textSize="@dimen/small_text_size"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="Progress text" />
-
             <ImageView
                 android:id="@+id/play_button_view"
-                android:layout_width="@dimen/play_button_size"
-                android:layout_height="@dimen/play_button_size"
+                android:layout_width="46dp"
+                android:layout_height="42dp"
                 android:layout_marginBottom="@dimen/dimen_small"
                 android:clickable="true"
                 android:contentDescription="@null"
@@ -53,47 +41,20 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/status_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimen_small"
-                android:layout_marginBottom="@dimen/dimen_small"
-                android:gravity="center"
-                android:textAlignment="center"
-                android:textSize="@dimen/small_text_size"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/play_button_view"
-                tools:text="text"
-                tools:textColor="@color/colorText" />
-
-
-            <TextView
-                android:id="@+id/tv_duration_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dimen_small"
-                android:gravity="end"
-                android:textColor="@color/colorWhite"
-                android:textSize="@dimen/small_text_size"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="Duration text" />
-
 
             <FrameLayout
                 android:id="@+id/full_screen_button"
-                android:layout_width="@dimen/option_button_size"
-                android:layout_height="@dimen/option_button_size"
-                android:layout_marginEnd="50dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:background="@drawable/round"
                 android:clickable="true"
                 android:focusable="true"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintHorizontal_bias="0.246"
+                app:layout_constraintStart_toEndOf="@+id/play_button_view"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.4">
 
                 <TextView
                     android:id="@+id/full_screen_button_view"
@@ -103,37 +64,25 @@
                     android:background="@drawable/ic_fullscreen" />
             </FrameLayout>
 
+
             <FrameLayout
-                android:id="@+id/playback_rate_button"
-                android:layout_width="@dimen/option_button_size"
-                android:layout_height="@dimen/option_button_size"
-                android:layout_marginStart="50dp"
+                android:id="@+id/mute_button"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:background="@drawable/round"
                 android:clickable="true"
                 android:focusable="true"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/play_button_view"
+                app:layout_constraintHorizontal_bias="0.762"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.4">
 
-                <TextView
-                    android:layout_width="@dimen/dimen_big"
-                    android:layout_height="@dimen/dimen_big"
-                    android:layout_gravity="center"
-                    android:background="@drawable/ic_settings" />
             </FrameLayout>
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <SeekBar
-            android:id="@+id/seek_bar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@null"
-            android:progressDrawable="@drawable/seekbar_progress"
-            android:thumb="@drawable/seekbar_thumb"
-            app:layout_constraintBottom_toBottomOf="@id/guideline"
-            app:layout_constraintTop_toTopOf="@id/guideline" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline"

@@ -4,29 +4,34 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.pm.ActivityInfo
-import android.graphics.Color
 import android.net.Uri
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.Surface
 import android.view.View
+import android.view.View.GONE
+import android.view.View.INVISIBLE
+import android.view.View.VISIBLE
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.MutableLiveData
 import com.amazonaws.ivs.player.Cue
 import com.amazonaws.ivs.player.MediaPlayer
-import com.amazonaws.ivs.player.MediaType
 import com.amazonaws.ivs.player.Player
 import com.amazonaws.ivs.player.PlayerException
-import com.amazonaws.ivs.player.PlayerView
 import com.amazonaws.ivs.player.Quality
-import com.amazonaws.ivs.player.TextMetadataCue
+import com.amazonaws.ivs.player.customui.common.enums.PlayingState
 import com.example.flutter_ivs_player_plugin.R
 import com.example.flutter_ivs_player_plugin.databinding.IvsPlayerViewActivityBinding
 import com.example.flutter_ivs_player_plugin.databinding.ViewPlayerControlsBinding
+import com.example.flutter_ivs_player_sdk.common.Configuration.HIDE_CONTROLS_DELAY
+import com.example.flutter_ivs_player_sdk.common.launchMain
+import com.example.flutter_ivs_player_sdk.common.timeString
 import io.flutter.plugin.platform.PlatformView
-import java.nio.charset.StandardCharsets
 
 
 private const val TAG = "Flutter_IVS_Plugin"
@@ -43,6 +48,14 @@ internal class PlayerView(
     private var binding: IvsPlayerViewActivityBinding? = null
     private var playerControlBinding: ViewPlayerControlsBinding? = null
     private var playerListener: Player.Listener? = null
+    private var buttonState: PlayingState = PlayingState.PLAYING
+
+    private val timerHandler = Handler(Looper.getMainLooper())
+    private val timerRunnable = kotlinx.coroutines.Runnable {
+        launchMain {
+            toggleControls(false);
+        }
+    }
 
 
     override fun getView(): View {
@@ -56,11 +69,47 @@ internal class PlayerView(
     init {
         val inflater = LayoutInflater.from(context)
         binding = IvsPlayerViewActivityBinding.inflate(inflater)
+
         playerControlBinding = binding!!.playerControls;
+
         val surfaceView = binding!!.surfaceView
         playerStart(surfaceView.holder.surface)
-        playerControlBinding!!.fullScreenButton.setOnClickListener() {
+
+        binding!!.playerRoot.setOnClickListener {
+            when (playerControlBinding!!.playerControls.visibility) {
+                GONE -> {}
+                INVISIBLE -> {
+                    toggleControls(true)
+                }
+
+                VISIBLE -> {
+                    toggleControls(false)
+                    restartTimer()
+                }
+            }
+        }
+
+        restartTimer()
+
+        playerControlBinding!!.fullScreenButton.setOnClickListener {
             toggleFullScreen()
+        }
+
+        playerControlBinding!!.playButtonView.setOnClickListener {
+            restartTimer()
+            when (buttonState) {
+                PlayingState.PLAYING -> {
+                    buttonState = PlayingState.PAUSED
+                    pause()
+                    updatePlayButton(false);
+                }
+
+                PlayingState.PAUSED -> {
+                    buttonState = PlayingState.PLAYING
+                    play()
+                    updatePlayButton(true);
+                }
+            }
         }
 
         constrainedLayout = binding!!.root;
@@ -70,6 +119,24 @@ internal class PlayerView(
     private fun initPlayer() {
         // Media player initialization
         player = MediaPlayer(context)
+    }
+
+    private fun pause() {
+        Log.d(TAG, "Pausing playback")
+        // Pauses playback of the stream.
+        player?.pause()
+    }
+
+
+    private fun toggleControls(show: Boolean) {
+        Log.d(TAG, "Toggling controls: $show")
+        playerControlBinding!!.playerControls.visibility = if (show) VISIBLE else INVISIBLE;
+    }
+
+
+    private fun restartTimer() {
+        timerHandler.removeCallbacks(timerRunnable)
+        timerHandler.postDelayed(timerRunnable, HIDE_CONTROLS_DELAY)
     }
 
 
@@ -131,8 +198,6 @@ internal class PlayerView(
 
 
     private fun setPlayerListener() {
-
-
         // Media player listener creation and initialization
         playerListener = object : Player.Listener() {
             override fun onAnalyticsEvent(p0: String, p1: String) {}
@@ -170,23 +235,28 @@ internal class PlayerView(
         when (state) {
             Player.State.BUFFERING -> {
                 // Indicates that the Player is buffering content
+                buttonState = PlayingState.PLAYING
             }
 
             Player.State.IDLE -> {
                 // Indicates that the Player is idle
+                buttonState = PlayingState.PAUSED
             }
 
             Player.State.READY -> {
                 // Indicates that the Player is ready to play the loaded source
+                buttonState = PlayingState.PAUSED
             }
 
             Player.State.ENDED -> {
                 // Indicates that the Player reached the end of the stream
+                buttonState = PlayingState.PAUSED
             }
 
             Player.State.PLAYING -> {
                 // Indicates that the Player is playing
                 updatePlayButton(true)
+                buttonState = PlayingState.PLAYING
             }
 
             else -> { /* Ignored */
